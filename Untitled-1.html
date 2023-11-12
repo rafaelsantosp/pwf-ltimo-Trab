@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta BrasilAPI</title>
+</head>
+<body>
+
+  <h1>Consulta BrasilAPI</h1>
+
+  <!-- Consultas Programáticas -->
+  <h2>Consultas Programáticas</h2>
+  <button onclick="consultaPopulacao()">Consultar População do Brasil</button>
+  <button onclick="consultaEstados()">Consultar Lista de Estados</button>
+  <button onclick="consultaCep()">Consultar CEP</button>
+
+  <div id="programaticasResultado"></div>
+
+  <!-- Consultas via Formulário -->
+  <h2>Consultas via Formulário</h2>
+  
+  <!-- Consultar População por UF -->
+  <form onsubmit="return consultaPopulacaoUF()">
+    <label for="ufInput">Digite a UF para consultar a população:</label>
+    <input type="text" id="ufInput" required>
+    <button type="submit">Consultar</button>
+  </form>
+  <div id="populacaoUFResultado"></div>
+
+  <!-- Consultar Dados do Município -->
+  <form onsubmit="return consultaMunicipio()">
+    <label for="municipioInput">Digite o nome do município:</label>
+    <input type="text" id="municipioInput" required>
+    <button type="submit">Consultar</button>
+  </form>
+  <div id="municipioResultado"></div>
+
+  <!-- Consultar Dados da Empresa por CNPJ -->
+  <form onsubmit="return consultaEmpresa()">
+    <label for="cnpjInput">Digite o CNPJ da empresa:</label>
+    <input type="text" id="cnpjInput" required>
+    <button type="submit">Consultar</button>
+  </form>
+  <div id="empresaResultado"></div>
+
+  <script>
+    const apiUrl = 'https://api.brasilapi.com.br/v1/';
+
+    // Consultas Programáticas
+    async function consultaPopulacao() {
+      try {
+        const response = await fetch(apiUrl + 'population');
+        const data = await response.json();
+        document.getElementById('programaticasResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de população:', error);
+      }
+    }
+
+    async function consultaEstados() {
+      try {
+        const response = await fetch(apiUrl + 'states');
+        const data = await response.json();
+        document.getElementById('programaticasResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de estados:', error);
+      }
+    }
+
+    async function consultaCep() {
+      try {
+        const response = await fetch(apiUrl + 'cep/01001000');
+        const data = await response.json();
+        document.getElementById('programaticasResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de CEP:', error);
+      }
+    }
+
+    // Consultas via Formulário
+    async function consultaPopulacaoUF() {
+      try {
+        const uf = document.getElementById('ufInput').value;
+        const response = await fetch(apiUrl + 'population/' + uf);
+        const data = await response.json();
+        document.getElementById('populacaoUFResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de população por UF:', error);
+      }
+      return false; // Para evitar que o formulário recarregue a página
+    }
+
+    async function consultaMunicipio() {
+      try {
+        const municipio = document.getElementById('municipioInput').value;
+        const response = await fetch(apiUrl + 'cities/' + municipio);
+        const data = await response.json();
+        document.getElementById('municipioResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de dados do município:', error);
+      }
+      return false; // Para evitar que o formulário recarregue a página
+    }
+
+    async function consultaEmpresa() {
+      try {
+        const cnpj = document.getElementById('cnpjInput').value;
+        const response = await fetch(apiUrl + 'companies/' + cnpj);
+        const data = await response.json();
+        document.getElementById('empresaResultado').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta de dados da empresa:', error);
+      }
+      return false; // Para evitar que o formulário recarregue a página
+    }
+  </script>
+
+</body>
+</html>

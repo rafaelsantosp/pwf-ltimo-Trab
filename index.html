@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Rafael Santos </title>
+</head>
+<body>
+    <div id="mostra "> </div>
+  
+    <script>
+         fetch("paises-gentilicos-google-maps.json")
+         .then(response => {
+            if(!response.ok){
+                alert(" Ops! Parece que algo de errado aconteceu.");
+            }
+            return response.json();
+         })
+         .then(data => {
+            console.log(data.gentilico);
+            console.log(data.nome_pais);
+            console.log(data.nome_pais_int);
+            console.log(data.sigla);
+
+         })
+         .catch(error => {
+            alert(' Erro a recuperar arquivo json ' , error );
+         })
+    </script>
+ 
+
+
+
+</body>
+</html>
+
