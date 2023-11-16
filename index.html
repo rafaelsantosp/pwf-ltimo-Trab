@@ -68,9 +68,17 @@
     <p><strong>Nome Internacional:</strong> <span id="nomeInternacionalPais"></span></p>
   </div>
 
+
+
+
+  <!-- EXERCÍCIO 2 -->
+
   <script>
     // EXERCÍCIO 1  
     const url = "./paises.json"
+    
+
+
     document.addEventListener("DOMContentLoaded", function () { // dom = js só começa quando a estrutura tiver carregada
       const selectPaises = document.getElementById("selectPaises");
       const nomePais = document.getElementById("nomePais");
@@ -112,74 +120,10 @@
 
 
 
-    // Exercício 2 
-    const apiUrl = "https://brasilapi.com.br/api/";
-
-    // Função para fazer a consulta via programação
-    async function consultaProgramacao(endpoint, divResultado) {
-      try {
-        const response = await fetch(apiUrl + endpoint);
-        const data = await response.json();
-        document.getElementById(divResultado).innerHTML = JSON.stringify(data, null, 2);
-      } catch (error) {
-        console.error('Erro na consulta:', error);
-      }
-    }
-
-    // Função para consultar CEP
-    async function consultarCep() {
-      const cep = document.getElementById("cep").value;
-      await consultaProgramacao(`cep/v1/${cep}`, "resultadoCep");
-    }
-
-    // Função para consultar CNPJ
-    async function consultarCnpj() {
-      const cnpj = document.getElementById("cnpj").value;
-      await consultaProgramacao(`cnpj/v1/${cnpj}`, "resultadoCnpj");
-    }
-
-    // Função para consultar CPF
-    async function consultarCpf() {
-      const cpf = document.getElementById("cpf").value;
-      await consultaProgramacao(`cpf/v1/${cpf}`, "resultadoCpf");
-    }
-
-    // Consultas via programação
-    consultaProgramacao("v1/cnpj/00000000000191", "consultaProgramacao1");
-    consultaProgramacao("v1/cep/01001000", "consultaProgramacao2");
-    consultaProgramacao("v1/cpf/12345678909", "consultaProgramacao3");
-
-
+    // exercício 2
 
   </script>
 
 
-  <h3>Consultas API</h3>
 
-  <section>
-    <h2>Consultas via programação:</h2>
-    <div id="consultaProgramacao1"></div>
-    <div id="consultaProgramacao2"></div>
-    <div id="consultaProgramacao3"></div>
-  </section>
-
-  <!-- Perguntas  formulário -->
-  <section>
-    <h2> Responda referente aos seus dados. </h2>
-    <form id="formulario">
-      <label for="cep">Consultar Cep :</label>
-      <input type="text" id="cep" name="cep" required>
-      <button type="button" onclick="consultarCep()">Consultar</button>
-      <div id="resultadoCep"></div>
-
-      <label for="cnpj">Consultar CNPJ:</label>
-      <input type="text" id="cnpj" name="cnpj" required>
-      <button type="button" onclick="consultarCnpj()">Consultar</button>
-      <div id="resultadoCnpj"></div>
-
-      <label for="cpf">Consultar CPF:</label>
-      <input type="text" id="cpf" name="cpf" required>
-      <button type="button" onclick="consultarCpf()">Consultar</button>
-      <div id="resultadoCpf"></div>
-    </form>
-  </section>
+ 
