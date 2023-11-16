@@ -17,6 +17,7 @@
 
     h1 {
       color: #333;
+      margin-bottom: 15px;
     }
 
     label {
@@ -25,15 +26,21 @@
       color: #333;
     }
 
-    select {
+    select, input, button {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
       margin-bottom: 15px;
       box-sizing: border-box;
     }
+    button{
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
 
-    #infoPais {
+    #infoPais,
+    {
       display: none;
       margin-top: 20px;
       padding: 15px;
@@ -44,6 +51,7 @@
 
     h2 {
       color: #333;
+      margin-bottom: 10px;
     }
 
     p {
@@ -55,6 +63,7 @@
       font-weight: bold;
     }
   </style>
+
   <h1>Exercício 1 - Lista de Países</h1>
 
   <label for="selectPaises">Selecione um país:</label>
@@ -73,12 +82,46 @@
 
   <!-- EXERCÍCIO 2 -->
 
+  <h1> Consulta endereço </h1>
+  <label> Digite seu cep! </label>
+  <input type="number" id="cep">
+  <button onclick="consultaEndereco()"> Consultar </button>
+  <div id="resultado"> 
+    <p> Seu resultado aqui </p>
+  </div>
+
+
+
+  <h1> Consulta DDD </h1>
+  <label> Digite um DDD </label>
+  <input type="number" id="ddd">
+  <button onclick="consultaDdd()"> Consultar </button>
+  <div id="resultado2"> 
+    <p> Seu resultado aqui </p>
+  </div>
+
+  <h1> Consulta Sigla UF </h1>
+  <label> Digite uma sigla  </label>
+  <input type="text" id="siglaUF">
+  <button onclick="consultaUf()"> Consultar </button>
+  <div id="resultado3"> 
+    <p> Seu resultado aqui </p>
+  </div>
+
+
+
+ <!-- <button onclick="feriados()"> feriados 2023 </button>
+  <div id="resultado4">
+    <p> Seu resultado aqui </p>
+  </div>
+-->
+
+
   <script>
     // EXERCÍCIO 1  
-    const url = "./paises.json"
+    //funciona
+    const url1 = "./paises.json"
     
-
-
     document.addEventListener("DOMContentLoaded", function () { // dom = js só começa quando a estrutura tiver carregada
       const selectPaises = document.getElementById("selectPaises");
       const nomePais = document.getElementById("nomePais");
@@ -87,8 +130,8 @@
       const nomeInternacionalPais = document.getElementById("nomeInternacionalPais");
       const infoPais = document.getElementById("infoPais");
 
-      fetch(url)
-        .then(response => response.json())
+      fetch(url1)
+        .then(response => response.json()) // 
         .then(data => {
           Object.keys(data).forEach(key => { // pra cada key na data é uma referencia ao valor associado
             const pais = data[key]; // chaves nos dados, e pra cada chave eh um valor associado 
@@ -98,7 +141,7 @@
             selectPaises.appendChild(option);
           });
 
-          selectPaises.addEventListener('change', function () {
+          selectPaises.addEventListener('change', function () { 
             const selectedCountry = selectPaises.value;
             const countryData = Object.values(data).find(pais => pais.nome_pais === selectedCountry); // esta comparando o valor da procura com o pais selecionado
 
@@ -120,8 +163,118 @@
 
 
 
+
     // exercício 2
 
+
+
+
+          //funciona 
+          function consultaEndereco(){
+            let cep = document.querySelector('#cep').value;
+            
+            if (cep.length !== 8 ){
+              alert(`CEP inválido`);
+              return;
+            }
+            
+            let url2 = `https://brasilapi.com.br/api/cep/v1/${cep}`;
+
+            fetch (url2).then(function(response){
+              response.json().then(function(dados){ //  espera uma funcção que recebe os dados
+              console.log(dados);
+              mostraDados(dados);
+            });
+          });
+          }
+
+          function mostraDados(dados){
+            let resultado = document.querySelector('#resultado');
+
+            resultado.innerHTML = `<p> Cep : ${dados.cep}</p>
+                                <p> Estado: ${dados.state}</p>
+                                <p> Cidade: ${dados.city}</p>
+                                <p> Bairro: ${dados.neighborhood}</p>
+                                <p> Rua: ${dados.street}</p>  `
+          }
+
+
+
+
+
+
+
+          // funciona
+          function consultaDdd(){
+            let ddd = document.querySelector('#ddd').value;
+
+            if(ddd.length > 2 || ddd.length == ""){
+              alert(`DDD inválido.`);
+              return;
+            }
+            let url3 = `https://brasilapi.com.br/api/ddd/v1/${ddd}`;
+
+            fetch (url3).then(function(response2){
+              response2.json().then(function(dados2){
+                console.log(dados2);
+                mostraDdd(dados2);
+              })
+            })
+          }
+           function mostraDdd (dados2){
+            let resultado2 = document.querySelector('#resultado2');
+
+            resultado2.innerHTML = `<p> Estado: ${dados2.state}</p>`
+           }
+
+
+
+           // TA DANDO UNDEFINED
+          function consultaUf(){
+            let uf = document.querySelector('#siglaUF').value;
+            
+            if(uf.length > 2 || uf.length == ""){
+              alert(`Sigla inválido.`);
+              return;
+            }
+            let url4 = `https://brasilapi.com.br/api/ibge/municipios/v1/${siglaUF}?providers=dados-abertos-br,gov,wikipedia`;
+
+            fetch (url4).then(function(response3){
+              response3.json().then(function(dados3){
+                console.log(dados3);
+                mostraUf(dados3);
+              })
+            })
+          }
+
+          function mostraUf (dados3){
+            let resultado3 = document.querySelector('#resultado3');
+
+             resultado3.innerHTML = `<p> Nome: ${dados3.nome}</p>
+                                        <p> Código IBGE: ${dados3.codigo_ibge}`
+          }
+
+
+            // nao funciona
+          function feriados(){
+            let feriados = document.querySelector('#feriados').value='2023';
+            let url5 = `https://brasilapi.com.br/api/feriados/v1/{2023}`
+
+            fetch(url5).then(function(response4){
+              response4.json().then(function(dados4){
+                console.log(dados4);
+                mostraFeriados(dados4);
+              })
+            })
+          }
+
+          function mostraFeriados(dados4){
+            let resultado4 = document.querySelector('#resultado4');
+
+            resultado4.innerHTML = ` <p> Data: ${dados4.date} </p>
+                                     <p> Nome: ${dados4.name} </p>
+                                     <p> Tipo: ${dados4.type} </p>`
+          }
   </script>
 
 
