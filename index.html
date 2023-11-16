@@ -91,7 +91,7 @@
         .then(response => response.json())
         .then(data => {
           Object.keys(data).forEach(key => { // pra cada key na data é uma referencia ao valor associado
-            const pais = data[key];
+            const pais = data[key]; // chaves nos dados, e pra cada chave eh um valor associado 
             const option = document.createElement("option");
             option.value = pais.nome_pais;
             option.textContent = pais.nome_pais;
