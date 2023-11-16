@@ -1,36 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Rafael Santos </title>
+  <meta charset="UTF-8">
+  <title> Trabalho Final </title>
 </head>
+
 <body>
-    <div id="mostra "> </div>
-  
-    <script>
-         fetch("paises-gentilicos-google-maps.json")
-         .then(response => {
-            if(!response.ok){
-                alert(" Ops! Parece que algo de errado aconteceu.");
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #333;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    #infoPais {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0;
+      color: #555;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+  </style>
+  <h1>Exercício 1 - Lista de Países</h1>
+
+  <label for="selectPaises">Selecione um país:</label>
+  <select id="selectPaises"></select>
+
+  <div id="infoPais">
+    <h2>Informações do País Selecionado</h2>
+    <p><strong>Nome:</strong> <span id="nomePais"></span></p>
+    <p><strong>Gentílico:</strong> <span id="gentilicoPais"></span></p>
+    <p><strong>Sigla:</strong> <span id="siglaPais"></span></p>
+    <p><strong>Nome Internacional:</strong> <span id="nomeInternacionalPais"></span></p>
+  </div>
+
+  <script>
+    // EXERCÍCIO 1  
+    const url = "./paises.json"
+    document.addEventListener("DOMContentLoaded", function () { // dom = js só começa quando a estrutura tiver carregada
+      const selectPaises = document.getElementById("selectPaises");
+      const nomePais = document.getElementById("nomePais");
+      const gentilicoPais = document.getElementById("gentilicoPais");
+      const siglaPais = document.getElementById("siglaPais");
+      const nomeInternacionalPais = document.getElementById("nomeInternacionalPais");
+      const infoPais = document.getElementById("infoPais");
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          Object.keys(data).forEach(key => { // pra cada key na data é uma referencia ao valor associado
+            const pais = data[key];
+            const option = document.createElement("option");
+            option.value = pais.nome_pais;
+            option.textContent = pais.nome_pais;
+            selectPaises.appendChild(option);
+          });
+
+          selectPaises.addEventListener('change', function () {
+            const selectedCountry = selectPaises.value;
+            const countryData = Object.values(data).find(pais => pais.nome_pais === selectedCountry); // esta comparando o valor da procura com o pais selecionado
+
+            if (countryData) { // se for verdadeiro, caça os dados 
+              nomePais.textContent = countryData.nome_pais;
+              gentilicoPais.textContent = countryData.gentilico;
+              siglaPais.textContent = countryData.sigla;
+              nomeInternacionalPais.textContent = countryData.nome_pais_int;
+              infoPais.style.display = 'block';
+            } else {
+              infoPais.style.display = 'none';
             }
-            return response.json();
-         })
-         .then(data => {
-            console.log(data.gentilico);
-            console.log(data.nome_pais);
-            console.log(data.nome_pais_int);
-            console.log(data.sigla);
-
-         })
-         .catch(error => {
-            alert(' Erro a recuperar arquivo json ' , error );
-         })
-    </script>
- 
+          });
+        })
+        .catch(error => {
+          console.error('Ocorreu um erro ao carregar os países:', error);
+        });
+    });
 
 
 
-</body>
-</html>
+    // Exercício 2 
+    const apiUrl = "https://brasilapi.com.br/api/";
 
+    // Função para fazer a consulta via programação
+    async function consultaProgramacao(endpoint, divResultado) {
+      try {
+        const response = await fetch(apiUrl + endpoint);
+        const data = await response.json();
+        document.getElementById(divResultado).innerHTML = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error('Erro na consulta:', error);
+      }
+    }
+
+    // Função para consultar CEP
+    async function consultarCep() {
+      const cep = document.getElementById("cep").value;
+      await consultaProgramacao(`cep/v1/${cep}`, "resultadoCep");
+    }
+
+    // Função para consultar CNPJ
+    async function consultarCnpj() {
+      const cnpj = document.getElementById("cnpj").value;
+      await consultaProgramacao(`cnpj/v1/${cnpj}`, "resultadoCnpj");
+    }
+
+    // Função para consultar CPF
+    async function consultarCpf() {
+      const cpf = document.getElementById("cpf").value;
+      await consultaProgramacao(`cpf/v1/${cpf}`, "resultadoCpf");
+    }
+
+    // Consultas via programação
+    consultaProgramacao("v1/cnpj/00000000000191", "consultaProgramacao1");
+    consultaProgramacao("v1/cep/01001000", "consultaProgramacao2");
+    consultaProgramacao("v1/cpf/12345678909", "consultaProgramacao3");
+
+
+
+  </script>
+
+
+  <h3>Consultas API</h3>
+
+  <section>
+    <h2>Consultas via programação:</h2>
+    <div id="consultaProgramacao1"></div>
+    <div id="consultaProgramacao2"></div>
+    <div id="consultaProgramacao3"></div>
+  </section>
+
+  <!-- Perguntas  formulário -->
+  <section>
+    <h2> Responda referente aos seus dados. </h2>
+    <form id="formulario">
+      <label for="cep">Consultar Cep :</label>
+      <input type="text" id="cep" name="cep" required>
+      <button type="button" onclick="consultarCep()">Consultar</button>
+      <div id="resultadoCep"></div>
+
+      <label for="cnpj">Consultar CNPJ:</label>
+      <input type="text" id="cnpj" name="cnpj" required>
+      <button type="button" onclick="consultarCnpj()">Consultar</button>
+      <div id="resultadoCnpj"></div>
+
+      <label for="cpf">Consultar CPF:</label>
+      <input type="text" id="cpf" name="cpf" required>
+      <button type="button" onclick="consultarCpf()">Consultar</button>
+      <div id="resultadoCpf"></div>
+    </form>
+  </section>
