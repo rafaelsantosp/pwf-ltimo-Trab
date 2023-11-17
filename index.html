@@ -4,65 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <title> Trabalho Final </title>
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 20px;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-
-    h1 {
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      color: #333;
-    }
-
-    select, input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-    button{
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-    }
-
-    #infoPais,
-    {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    h2 {
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    p {
-      margin: 10px 0;
-      color: #555;
-    }
-
-    strong {
-      font-weight: bold;
-    }
-  </style>
+  
 
   <h1>Exercício 1 - Lista de Países</h1>
 
@@ -77,51 +23,52 @@
     <p><strong>Nome Internacional:</strong> <span id="nomeInternacionalPais"></span></p>
   </div>
 
-
-
-
-  <!-- EXERCÍCIO 2 -->
+  <h1>Exercício 2 - Lista de consultas </h1>
 
   <h1> Consulta endereço </h1>
   <label> Digite seu cep! </label>
   <input type="number" id="cep">
   <button onclick="consultaEndereco()"> Consultar </button>
-  <div id="resultado"> 
+  <div id="resultado">
     <p> Seu resultado aqui </p>
   </div>
-
 
 
   <h1> Consulta DDD </h1>
   <label> Digite um DDD </label>
   <input type="number" id="ddd">
   <button onclick="consultaDdd()"> Consultar </button>
-  <div id="resultado2"> 
-    <p> Seu resultado aqui </p>
-  </div>
-
-  <h1> Consulta Sigla UF </h1>
-  <label> Digite uma sigla  </label>
-  <input type="text" id="siglaUF">
-  <button onclick="consultaUf()"> Consultar </button>
-  <div id="resultado3"> 
+  <div id="resultado2">
     <p> Seu resultado aqui </p>
   </div>
 
 
+  <h1> Consulta CNPJ</h1>
+  <label> Digite um CNPJ </label>
+  <input type="text" id="cnpj">
+  <button onclick="consultaCnpj()"> Consultar </button>
+  <div id="resultado3">
+    <p> Seu resultado aqui </p>
+  </div>
 
- <!-- <button onclick="feriados()"> feriados 2023 </button>
+
+  <button onclick="feriados()"> feriados 2023 </button>
   <div id="resultado4">
     <p> Seu resultado aqui </p>
   </div>
--->
+
+  <h1>Exercício 4 - Promisses  </h1>
+
+  <button onclick="fetchData()"> Promisse Any </button>
+  <button onclick="fetchData2()"> Promisse Race </button>
+  <button onclick="fetchData3()"> Promisse All </button>
 
 
-  <script>
-    // EXERCÍCIO 1  
-    //funciona
+  <script>  
+    //  EXERCÍCIO 1 ->  funciona
+
     const url1 = "./paises.json"
-    
+
     document.addEventListener("DOMContentLoaded", function () { // dom = js só começa quando a estrutura tiver carregada
       const selectPaises = document.getElementById("selectPaises");
       const nomePais = document.getElementById("nomePais");
@@ -141,7 +88,7 @@
             selectPaises.appendChild(option);
           });
 
-          selectPaises.addEventListener('change', function () { 
+          selectPaises.addEventListener('change', function () {
             const selectedCountry = selectPaises.value;
             const countryData = Object.values(data).find(pais => pais.nome_pais === selectedCountry); // esta comparando o valor da procura com o pais selecionado
 
@@ -161,122 +108,189 @@
         });
     });
 
+     //  EXERCÍCIO 1 ->  FIM 
 
 
 
-    // exercício 2
+    //    EXERCÍCIO 2 ->  Início 
 
+    //funciona 
+    function consultaEndereco() {
+      let cep = document.querySelector('#cep').value;
 
+      if (cep.length !== 8) {
+        alert(`CEP inválido`);
+        return;
+      }
 
+      let url2 = `https://brasilapi.com.br/api/cep/v1/${cep}`;
 
-          //funciona 
-          function consultaEndereco(){
-            let cep = document.querySelector('#cep').value;
-            
-            if (cep.length !== 8 ){
-              alert(`CEP inválido`);
-              return;
-            }
-            
-            let url2 = `https://brasilapi.com.br/api/cep/v1/${cep}`;
+      fetch(url2).then(function (response) {
+        response.json().then(function (dados) { //  espera uma funcção que recebe os dados
+          console.log(dados);
+          mostraDados(dados);
+        });
+      });
+    }
 
-            fetch (url2).then(function(response){
-              response.json().then(function(dados){ //  espera uma funcção que recebe os dados
-              console.log(dados);
-              mostraDados(dados);
-            });
-          });
-          }
+    function mostraDados(dados) {
+      let resultado = document.querySelector('#resultado');
 
-          function mostraDados(dados){
-            let resultado = document.querySelector('#resultado');
-
-            resultado.innerHTML = `<p> Cep : ${dados.cep}</p>
+      resultado.innerHTML = `<p> Cep : ${dados.cep}</p>
                                 <p> Estado: ${dados.state}</p>
                                 <p> Cidade: ${dados.city}</p>
                                 <p> Bairro: ${dados.neighborhood}</p>
                                 <p> Rua: ${dados.street}</p>  `
-          }
+    }
+
+    // funciona
+    function consultaDdd() {
+      let ddd = document.querySelector('#ddd').value;
+
+      if (ddd.length > 2 || ddd.length == "") {
+        alert(`DDD inválido.`);
+        return;
+      }
+      let url3 = `https://brasilapi.com.br/api/ddd/v1/${ddd}`;
+
+      fetch(url3).then(function (response2) {
+        response2.json().then(function (dados2) {
+          console.log(dados2);
+          mostraDdd(dados2);
+        })
+      })
+    }
+    function mostraDdd(dados2) {
+      let resultado2 = document.querySelector('#resultado2');
+
+      resultado2.innerHTML = `<p> Estado: ${dados2.state}</p>`
+    }
 
 
 
+    // NAO FUNCIONA 
+  //  function consultaCnpj() {
+   //   let cnpj = document.querySelector('#cnpj').value;
 
+    //  if (cnpj.length > 14 || cnpj.length == "" ) {
+    //    alert(`Cnpj  inválido.`);
+    //    return;
+    //  }
+    //  let url4 = `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`;
 
+    //  fetch(url4).then(function (response3) {
+     //   response3.json().then(function (dados3) {
+       //   console.log(dados3);
+      //    mostraUf(dados3);
+      //  })
+      //})
+   // }
 
+   // function consultaCnpj(dados3) {
+     // let resultado3 = document.querySelector('#resultado3');
 
-          // funciona
-          function consultaDdd(){
-            let ddd = document.querySelector('#ddd').value;
+      //resultado3.innerHTML = `<p> Cnpj: ${dados3.cnpj}</p>
+        //                      <p> Razão social: ${dados3.razao_social}</p>
+          //                    <p> Nome: ${dados3.nome_fantasia}</p>
+            //                  <p> Data de Início: ${dados3.data_inicio_atividade}</p>
+              //                <p> Município: ${dados3.municipio} </p> `
+    //}
 
-            if(ddd.length > 2 || ddd.length == ""){
-              alert(`DDD inválido.`);
-              return;
-            }
-            let url3 = `https://brasilapi.com.br/api/ddd/v1/${ddd}`;
+    
+    // FUNCIONA NO CONSOLE.
+    function feriados() {
+      let ano = 2023
+      let url5 = `https://brasilapi.com.br/api/feriados/v1/${ano}`
 
-            fetch (url3).then(function(response2){
-              response2.json().then(function(dados2){
-                console.log(dados2);
-                mostraDdd(dados2);
-              })
-            })
-          }
-           function mostraDdd (dados2){
-            let resultado2 = document.querySelector('#resultado2');
+      fetch(url5).then(function (response4) {
+        response4.json().then(function (dados4) {
+          console.log(dados4);        
+          mostraFeriados(dados4);
+        })
+      })
+    }
 
-            resultado2.innerHTML = `<p> Estado: ${dados2.state}</p>`
-           }
+    function mostraFeriados(dados4) {
+      let resultado4 = document.querySelector('#resultado4');
 
-
-
-           // TA DANDO UNDEFINED
-          function consultaUf(){
-            let uf = document.querySelector('#siglaUF').value;
-            
-            if(uf.length > 2 || uf.length == ""){
-              alert(`Sigla inválido.`);
-              return;
-            }
-            let url4 = `https://brasilapi.com.br/api/ibge/municipios/v1/${siglaUF}?providers=dados-abertos-br,gov,wikipedia`;
-
-            fetch (url4).then(function(response3){
-              response3.json().then(function(dados3){
-                console.log(dados3);
-                mostraUf(dados3);
-              })
-            })
-          }
-
-          function mostraUf (dados3){
-            let resultado3 = document.querySelector('#resultado3');
-
-             resultado3.innerHTML = `<p> Nome: ${dados3.nome}</p>
-                                        <p> Código IBGE: ${dados3.codigo_ibge}`
-          }
-
-
-            // nao funciona
-          function feriados(){
-            let feriados = document.querySelector('#feriados').value='2023';
-            let url5 = `https://brasilapi.com.br/api/feriados/v1/{2023}`
-
-            fetch(url5).then(function(response4){
-              response4.json().then(function(dados4){
-                console.log(dados4);
-                mostraFeriados(dados4);
-              })
-            })
-          }
-
-          function mostraFeriados(dados4){
-            let resultado4 = document.querySelector('#resultado4');
-
-            resultado4.innerHTML = ` <p> Data: ${dados4.date} </p>
+      resultado4.innerHTML = ` <p> Data: ${dados4.date} </p>
                                      <p> Nome: ${dados4.name} </p>
                                      <p> Tipo: ${dados4.type} </p>`
-          }
+    }
+
+
+    // EXERCÍCIO 4  Início 
+
+    // PROMISSE ANY
+    async function fetchData() {
+      const apiUrl1 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos';
+      const apiUrl2 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas';
+      const apiUrl3 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos/5940/anos';
+
+      try {
+        const result = await Promise.any([
+          fetch(apiUrl1).then(response => response.json()),
+          fetch(apiUrl2).then(response => response.json()),
+          fetch(apiUrl3).then(response => response.json())
+        ]);
+
+        console.log('Resultado da primeira API resolvida:', result);
+
+        alert('Resultado da primeira API resolvida:\n' + JSON.stringify(result, null, 2));
+
+      } catch (error) {
+        console.error('Erro ao acessar APIs:', error);
+        alert('Erro ao acessar APIs:\n' + error.message);
+      }
+    }
+
+
+
+    // PROMISSE RACE 
+    async function fetchData2() {
+      const apiUrl4 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos';
+      const apiUrl5 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas';
+      const apiUrl6 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos/5940/anos';
+
+      try {
+        const result = await Promise.race([
+          fetch(apiUrl4).then(response => response.json()),
+          fetch(apiUrl5).then(response => response.json()),
+          fetch(apiUrl6).then(response => response.json())
+        ]);
+
+        console.log('Resultado da primeira API resolvida:', result);
+
+        alert('Resultado da primeira API resolvida:\n' + JSON.stringify(result, null, 2));
+
+      } catch (error) {
+        console.error('Erro ao acessar a primeira API:', error);
+        alert('Erro ao acessar a primeira API:\n' + error.message);
+      }
+    }
+
+    // PROMISSE ALL 
+
+    async function fetchData3() {
+
+      const apiUrl7 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos';
+      const apiUrl8 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas';
+      const apiUrl9 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos/5940/anos';
+
+      try {
+        const results = await Promise.all([
+          fetch(apiUrl7).then(response => response.json()),
+          fetch(apiUrl8).then(response => response.json()),
+          fetch(apiUrl9).then(response => response.json())
+        ]);
+
+        console.log('Resultados de todas as APIs resolvidas:', results);
+
+        alert('Resultados de todas as APIs resolvidas:\n' + JSON.stringify(results, null, 2));
+
+      } catch (error) {
+        console.error('Erro na última API rejeitada:', error);
+        alert('Erro na última API rejeitada:\n' + error.message);
+      }
+    }
   </script>
-
-
-
- 
