@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  
+
 
   <h1>Exercício 1 - Lista de Países</h1>
 
@@ -45,7 +45,7 @@
 
   <h1> Consulta CNPJ</h1>
   <label> Digite um CNPJ </label>
-  <input type="text" id="cnpj">
+  <input type="number" id="cnpj">
   <button onclick="consultaCnpj()"> Consultar </button>
   <div id="resultado3">
     <p> Seu resultado aqui </p>
@@ -57,14 +57,29 @@
     <p> Seu resultado aqui </p>
   </div>
 
-  <h1>Exercício 4 - Promisses  </h1>
+  <button onclick="cidade()"> Mostra cidades </button>
+  <div id="resultado5">
+    <p> Seu resultado aqui </p>
+  </div>
+
+
+
+  <button onclick="consultaDominio()">Consultar Domínio das Lojas Americanas</button>
+
+  <div id="resultadoDominio">
+    <p>Seu resultado aqui</p>
+  </div>
+
+
+
+  <h1>Exercício 4 - Promisses </h1>
 
   <button onclick="fetchData()"> Promisse Any </button>
   <button onclick="fetchData2()"> Promisse Race </button>
   <button onclick="fetchData3()"> Promisse All </button>
 
 
-  <script>  
+  <script>
     //  EXERCÍCIO 1 ->  funciona
 
     const url1 = "./paises.json"
@@ -76,7 +91,7 @@
       const siglaPais = document.getElementById("siglaPais");
       const nomeInternacionalPais = document.getElementById("nomeInternacionalPais");
       const infoPais = document.getElementById("infoPais");
-
+      infoPais.style.display = 'none';
       fetch(url1)
         .then(response => response.json()) // 
         .then(data => {
@@ -108,7 +123,7 @@
         });
     });
 
-     //  EXERCÍCIO 1 ->  FIM 
+    //  EXERCÍCIO 1 ->  FIM 
 
 
 
@@ -168,43 +183,42 @@
 
 
 
-    // NAO FUNCIONA 
-  //  function consultaCnpj() {
-   //   let cnpj = document.querySelector('#cnpj').value;
+    function consultaCnpj() {
+      let cnpj = document.querySelector('#cnpj').value;
 
-    //  if (cnpj.length > 14 || cnpj.length == "" ) {
-    //    alert(`Cnpj  inválido.`);
-    //    return;
-    //  }
-    //  let url4 = `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`;
+      if (cnpj.length > 14 || cnpj.length == "") {
+        alert(`Cnpj  inválido.`);
+        return;
+      }
+      let url4 = `https://brasilapi.com.br/api/cnpj/v1/${cnpj}`;
 
-    //  fetch(url4).then(function (response3) {
-     //   response3.json().then(function (dados3) {
-       //   console.log(dados3);
-      //    mostraUf(dados3);
-      //  })
-      //})
-   // }
+      fetch(url4).then(function (response3) {
+        response3.json().then(function (dados3) {
+          console.log(dados3);
+          mostraCnpj(dados3);
+        })
+      })
+    }
 
-   // function consultaCnpj(dados3) {
-     // let resultado3 = document.querySelector('#resultado3');
+    function mostraCnpj(dados3) {
+      let resultado3 = document.querySelector('#resultado3');
 
-      //resultado3.innerHTML = `<p> Cnpj: ${dados3.cnpj}</p>
-        //                      <p> Razão social: ${dados3.razao_social}</p>
-          //                    <p> Nome: ${dados3.nome_fantasia}</p>
-            //                  <p> Data de Início: ${dados3.data_inicio_atividade}</p>
-              //                <p> Município: ${dados3.municipio} </p> `
-    //}
+      resultado3.innerHTML = `<p> Cnpj: ${dados3.cnpj}</p>
+                              <p> Razão social: ${dados3.razao_social}</p>
+                              <p> Nome: ${dados3.nome_fantasia}</p>
+                              <p> Data de Início: ${dados3.data_inicio_atividade}</p>
+                              <p> Município: ${dados3.municipio} </p> `
+    }
 
-    
-    // FUNCIONA NO CONSOLE.
+    // CONSULTAS PROGRAMÁTICAS 
+
     function feriados() {
       let ano = 2023
       let url5 = `https://brasilapi.com.br/api/feriados/v1/${ano}`
 
       fetch(url5).then(function (response4) {
         response4.json().then(function (dados4) {
-          console.log(dados4);        
+          console.log(dados4);
           mostraFeriados(dados4);
         })
       })
@@ -213,14 +227,96 @@
     function mostraFeriados(dados4) {
       let resultado4 = document.querySelector('#resultado4');
 
-      resultado4.innerHTML = ` <p> Data: ${dados4.date} </p>
-                                     <p> Nome: ${dados4.name} </p>
-                                     <p> Tipo: ${dados4.type} </p>`
+      if (dados4 && Array.isArray(dados4)) {
+        let feriadosHTML = '';
+
+        dados4.forEach(feriado => {
+          feriadosHTML += `<p>Data: ${feriado.date}</p>
+                     <p>Nome: ${feriado.name}</p>
+                     <p>Tipo: ${feriado.type}</p><br>`;
+        });
+
+        resultado4.innerHTML = feriadosHTML;
+      } else {
+        resultado4.innerHTML = 'Erro ao obter os feriados.';
+      }
+    }
+    function cidade(){
+      let cidade = "São Benedito";
+      let url6 = `https://brasilapi.com.br/api/cptec/v1/cidade/${cidade}`
+      
+
+      fetch(url6)
+        .then(response5 => {
+          if (!response5.ok) {
+            throw new Error(`Erro ao consultar a API: ${response5.status} ${response5.statusText}`);
+          }
+          return response5.json();
+        })
+        .then(dados5 => {
+          console.log(dados5);
+          mostraCidades(dados5);
+        })
+        .catch(error => {
+          console.error('Erro na requisição da API:', error);
+          alert('Erro na requisição da API:\n' + error.message);
+        });
+    }
+       
+        
+
+    function mostraCidades(dados5){
+      let resultado5 = document.querySelector('#resultado5');
+      if (dados5 && dados5.nome && dados5.estado && dados5.id) {
+        resultado5.innerHTML = `<p>Nome: ${dados5.nome}</p>
+                                <p>Estado: ${dados5.estado}</p>
+                                <p>ID: ${dados5.id}</p>`;
+      } else {
+        resultado5.innerHTML = 'Nenhuma informação encontrada para a cidade.';
+      }
+    }
+   
+
+  
+    function consultaDominio() {
+      let dominio = 'lojasamericanas.com.br';  // Domínio das Lojas Americanas
+
+      let url7 = `https://brasilapi.com.br/api/registrobr/v1/${dominio}`;
+
+      fetch(url7)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Erro ao consultar a API: ${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(dadosDominio => {
+          console.log(dadosDominio);
+          mostraDadosDominio(dadosDominio);
+        })
+        .catch(error => {
+          console.error('Erro na requisição da API:', error);
+          alert('Erro na requisição da API:\n' + error.message);
+        });
     }
 
+    function mostraDadosDominio(dadosDominio) {
+      let resultadoDominio = document.querySelector('#resultadoDominio');
+
+      if (dadosDominio && Object.keys(dadosDominio).length > 0) {
+        let dominioHTML = '';
+
+        for (const key in dadosDominio) {
+          dominioHTML += `<p>${key}: ${dadosDominio[key]}</p>`;
+        }
+
+        resultadoDominio.innerHTML = dominioHTML;
+      } else {
+        resultadoDominio.innerHTML = 'Nenhuma informação encontrada para o domínio.';
+      }
+    }
 
     // EXERCÍCIO 4  Início 
-
     // PROMISSE ANY
     async function fetchData() {
       const apiUrl1 = 'https://parallelum.com.br/fipe/api/v1/carros/marcas/59/modelos';
@@ -243,8 +339,6 @@
         alert('Erro ao acessar APIs:\n' + error.message);
       }
     }
-
-
 
     // PROMISSE RACE 
     async function fetchData2() {
